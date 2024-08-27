@@ -1,0 +1,28 @@
+.normal_weight_font .webix_el_box,
+.normal_weight_font .webix_button {
+    font-weight: normal;
+}
+
+.button_positive_state .webix_button {
+    background: #d0fed2;
+}
+
+.button_positive_state .webix_button:hover {
+    background: #d0fed2b0;
+}
+
+.button_negative_state .webix_button {
+    background: #fecdcd;
+}
+
+.button_negative_state .webix_button:hover {
+    background: #fecdcda8;
+}
+
+.button_warning_state .webix_button {
+    background: #fffee2;
+}
+
+.button_warning_state .webix_button:hover {
+    background: #fffee2af;
+}
