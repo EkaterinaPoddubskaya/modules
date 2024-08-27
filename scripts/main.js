@@ -9,6 +9,10 @@ let button_state_index = 0;
 webix.protoUI({
     name:"threeStateButton",
     $init(config) {
+        this.$ready.push(() => {
+            this.define("label", config.states[config.state]);
+            webix.html.addCss(this.getNode(), BUTTON_STATE[button_state_index].style);
+        });
         this.attachEvent("onItemClick", () => {
             webix.html.removeCss(this.getNode(), BUTTON_STATE[button_state_index].style);
             button_state_index = (button_state_index + 1) % BUTTON_STATE.length;
@@ -45,9 +49,8 @@ const threeStateButton = {
             }
         }
     },
-    label:"Off",
     width: 150,
-    css: "webix_transparent button_positive_state normal_weight_font"
+    css: "webix_transparent normal_weight_font"
 }
 
 const filmHeader = {
