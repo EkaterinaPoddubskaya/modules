@@ -4,18 +4,6 @@ const BUTTON_STYLE = [
     "button_warning_state"
 ]
 
-const changeState = (thisView, config) => {
-    buttonNode = thisView.getNode();
-
-    webix.html.removeCss(buttonNode, BUTTON_STYLE[config.state]);
-    statesCount = Object.keys(config.states).length;
-    config.state = (config.state + 1) % statesCount;
-    webix.html.addCss(buttonNode, BUTTON_STYLE[config.state]);
-
-    thisView.define("label", config.states[config.state]);
-    thisView.refresh();
-}
-
 webix.protoUI({
     name:"threeStateButton",
     defaults: {
@@ -37,25 +25,32 @@ webix.protoUI({
             }
         }
         if (invalidMessage) throw new Error(invalidMessage);
-        else return value;
+        return value;
     },
     state_setter: (value) => {
-        if (typeof value === 'number' && value >= 0 && value < 3) return value;
-        else throw new Error("State is not a number type");
+        if (typeof value !== 'number' || value < 0 || value > 2) 
+            throw new Error("State is defined incorrectly");
+        return value;
     },
     $init(config) {
-        this.$ready.push(() => {
-            config.state = this.config.state;
-            const state = config.state;
-            this.define("label", config.states[state]);
-            webix.html.addCss(this.getNode(), BUTTON_STYLE[state]);
-        });
+        this.$ready.push(() => this.setButtonNameAndColor(config));
         this.attachEvent("onItemClick", () => {
-            changeState(this, config);
-            this.callEvent("onStateChange", [config.state]);
+            this.changeState(config);
+            this.callEvent("onStateChange", [this.config.state]);
         });
-        this.attachEvent("onDestruct", () => {
-            this.detachEvent("onItemClick");
-        });   
-    } 
+    },
+    setState(config) {
+        statesCount = Object.keys(config.states).length;
+        this.config.state = (this.config.state + 1) % statesCount;
+    },
+    setButtonNameAndColor(config) {
+        webix.html.addCss(this.getNode(), BUTTON_STYLE[this.config.state]);
+        this.define("label", config.states[this.config.state]);
+    },
+    changeState(config) {
+        webix.html.removeCss(this.getNode(), BUTTON_STYLE[this.config.state]);
+        this.setState(config);
+        this.setButtonNameAndColor(config);
+        this.refresh();
+    }
 }, webix.ui.button);
