@@ -1,56 +1,26 @@
-const BUTTON_STATE = [
-    { id: 0, style: "button_positive_state" },
-    { id: 1, style: "button_negative_state" },
-    { id: 2, style: "button_warning_state" }
-]
-
-let button_state_index = 0;
-
-webix.protoUI({
-    name:"threeStateButton",
-    $init(config) {
-        this.$ready.push(() => {
-            this.define("label", config.states[config.state]);
-            webix.html.addCss(this.getNode(), BUTTON_STATE[button_state_index].style);
-        });
-        this.attachEvent("onItemClick", () => {
-            webix.html.removeCss(this.getNode(), BUTTON_STATE[button_state_index].style);
-            button_state_index = (button_state_index + 1) % BUTTON_STATE.length;
-            webix.html.addCss(this.getNode(), BUTTON_STATE[button_state_index].style);
-
-            config.state = BUTTON_STATE[button_state_index].id;
-            this.define("label", config.states[config.state]);
-            this.refresh();
-
-            this.callEvent("onStateChange", [config.state]);
-        });
-    } 
-}, webix.ui.button);
-
 const threeStateButton = {
     view:"threeStateButton",
     states:{ 
-        [BUTTON_STATE[0].id]: "Off", 
-        [BUTTON_STATE[1].id]: "SortAsc", 
-        [BUTTON_STATE[2].id]: "Sort Desc" 
+        0: "Off", 
+        1: "SortAsc", 
+        2: "Sort Desc"
     }, 
-    state: BUTTON_STATE[0].id, 
+    state: 0, 
     on:{
         onStateChange(state) {
+            const filmList = $$("filmList");
             switch(state) {
-                case BUTTON_STATE[1].id:
-                    $$("filmList").sort("#title#", "asc");
+                case 1:
+                    filmList.sort("#title#", "asc");
                     break;
-                case BUTTON_STATE[2].id:
-                    $$("filmList").sort("#title#", "desc");
+                case 2:
+                    filmList.sort("#title#", "desc");
                     break;
                 default:
-                    $$("filmList").sort("#id#", "asc", "int");
+                    filmList.sort("#id#", "asc", "int");
             }
         }
-    },
-    width: 150,
-    css: "webix_transparent normal_weight_font"
+    }
 }
 
 const filmHeader = {
